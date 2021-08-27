@@ -6,8 +6,16 @@ Prof. M Diaz-Maldonado
 
 
 Synopsis:
-Solves for the step response of an underdamped mechanical system.
-Produces a plot similar to that shown in example 7.8 of Kluever's textbook.
+Solves for the step response of an underdamped mechanical system described
+by the second-order Ordinary Differential Equation ODE:
+
+                m * y'' + b * y' + k * y = f * u(t),
+
+where m is the mass, b is the damper friction, k is the spring stiffness,
+f is the forcing constant, and u(t) = H is the step-input of magnitude H.
+
+The code produces a plot similar to that shown in example 7.8 of Kluever's
+textbook.
 
 
 Copyright (c) 2021 Misael Diaz-Maldonado
@@ -31,16 +39,18 @@ mpl.rcParams['text.usetex'] = True
 from matplotlib import pyplot as plt
 
 
-def step(prms, H, t):
+def step(prms, t):
     """
     Synopsis:
     Computes the step-response y(t) of an underdamped second-order dynamic
     system given the system mass, friction and stiffness constants, and the
-    magnitude H of the step-input u(t).
+    forcing constant and magnitude H of the step-input u(t).
     """
 
+    # unpacks mechanical system params (inertia, friction, stiffness, etc.)
+    m, b, k, f, H = prms
     # defines the standard coefficients of the second-order ODE
-    a0, a1, b0 = (k / m, b / m, 1 / m)
+    a0, a1, b0 = (k / m, b / m, f / m)
     # determines the natural frequency and damping ratio, respectively
     omega, zeta = (  sqrt(a0),  a1 / ( 2 * sqrt(a0) )  )
     # complains if the system is not underdamped
@@ -57,7 +67,7 @@ def step(prms, H, t):
     return y
 
 
-def perf(prms, H):
+def perf(prms):
     """
     Synopsis:
     Obtains the performance characteristics of a second-order underdamped
@@ -68,7 +78,7 @@ def perf(prms, H):
     a0, a1, b0, omega, zeta = underdamped(prms)
   
     tp = pi / ( omega * sqrt(1 - zeta**2) )     # peak time
-    y_max = step(prms, H, tp)                   # peak value
+    y_max = step(prms, tp)                      # peak value
     y_ss = b0 * H / omega**2                    # steady-state value
     ts = 4 / (zeta * omega)                     # settling time
     P = 2 * pi / ( omega * sqrt(1 - zeta**2) )  # period of oscillation
@@ -85,9 +95,9 @@ def underdamped(prms):
     given the mass/moment of inertia and friction and stiffness constants.
     """
     # unpacks mechanical system parameters (inertia, friction, stiffness)
-    m, b, k = prms
+    m, b, k, f, H = prms
     # computes the standard coefficients of the second-order ODE
-    a0, a1, b0 = (k / m, b / m, 1 / m)
+    a0, a1, b0 = (k / m, b / m, f / m)
     # determines the natural frequency and damping ratio, respectively
     omega, zeta = (  sqrt(a0),  a1 / ( 2 * sqrt(a0) )  )
     # complains if not underdamped
@@ -110,18 +120,17 @@ def is_underdamped(zeta):
 
 """ mechanical system parameters """
 # moment of inertia, friction, and stiffness
-prms = m, b, k = (0.2, 1.6, 65.0)
+prms = m, b, k, f, H = (0.2, 1.6,  65.0, 1.0, 2.5)
+#prms = m, b, k, f, H = (1.0, 8.0, 325.0, 5.0, 2.5) # equivalent set
 
 
 """ simulation parameters """
 # time t, seconds
 t = linspace(0, 2, 256)
-# step-input magnitude, u(t) = H for t > 0
-H = 2.5
 
 
 """ displays performance characteristics """
-tp, ts, Period, Ncycles, Mos, y_max, y_ss = perf(prms, H)
+tp, ts, Period, Ncycles, Mos, y_max, y_ss = perf(prms)
 performance = (
     f"\n\n"
     f"peak time and value:             {tp}, {y_max}\n"
@@ -138,7 +147,7 @@ print(performance)
 plt.close("all")
 plt.ion()
 fig, ax = plt.subplots()
-ax.plot(t, step(prms, H, t), color = "black", linestyle = "-",
+ax.plot(t, step(prms, t), color = "black", linestyle = "-",
         linewidth = 2)
 ax.set_xlabel(r'time, $t$, seconds')
 ax.set_ylabel(r'transient response, $y(t)$')

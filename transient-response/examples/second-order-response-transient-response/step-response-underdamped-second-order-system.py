@@ -71,3 +71,17 @@ ax.set_title('Step Response of an Underdamped Second Order Dynamic System')
 ax.legend()
 
 fig.savefig("unit-step-response-second-order-dynamic-system.png", dpi=300)
+
+
+
+"""
+Final Remarks:
+The transient response obtained here applies when the dynamics of the
+mechanical system is described by equation (7.69):
+                y'' + a1 * y' + a0 * y = a0 * u(t).
+The equation describes the dynamics of a mass interconnected with a
+movable wall via a spring. The damper is interconnected with a fixed wall
+on the opposite side of the mass. The input step u(t) corresponds to the
+wall displacement, which can be verified by cheking the units of each
+term.
+"""

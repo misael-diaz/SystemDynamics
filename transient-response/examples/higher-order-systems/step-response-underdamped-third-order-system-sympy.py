@@ -41,107 +41,107 @@ mpl.use("qt5agg")
 from matplotlib import pyplot as plt
 
 
+def fstep(R, Alpha, Beta, B0, H):
+
+    # time
+    t = sympy.Symbol('t')
+    # characteristic roots for the underdamped dynamic system
+    r = sympy.Symbol('r')                           # real
+    alpha, beta = sympy.symbols( ('alpha', 'beta') )# complex conjugates
+
+
+    # expresses the standard coefficients of the ODE in terms of the roots
+    a0 = -r * (alpha**2 + beta**2)
+    a1 = 2 * r * alpha  + (alpha**2 + beta**2)
+    a2 = -(r + 2 * alpha)
+    b0 = sympy.Symbol('b0')
+
+
+    # defines the homogeneous solution, y
+    y1 = sympy.exp(r * t)
+    y2 = sympy.exp(alpha * t) * sympy.sin(beta * t)
+    y3 = sympy.exp(alpha * t) * sympy.cos(beta * t)
+
+    y = y1 + y2 + y3
+
+    # defines the particular solution, yp
+    h = sympy.Symbol('h')
+    u = h                   # u(t), step
+    yp = b0 * h / a0
+
+
+
+
+    """ solves the Initial Value Problem IVP """
+    # matrix
+    Mat = sympy.Matrix([
+        [y1.subs({t: 0}), y2.subs({t: 0}), y3.subs({t: 0})],
+        [D(y1,t).subs({t: 0}), D(y2,t).subs({t: 0}), D(y3,t).subs({t: 0})],
+        [D(y1,t,t).subs({t: 0}), D(y2,t,t).subs({t: 0}),
+            D(y3,t,t).subs({t: 0})],
+    ])
+    # coefficient vector
+    vec = sympy.Matrix( [-yp.subs({t: 0}), 0, 0] )
+
+    # obtains the undetermined coefficient of the general solution
+    A, B, C = sympy.symbols( ('A', 'B', 'C') )
+    """Note: trailing comma enables sequence unpacking of the Finite Set"""
+    sol, = sympy.linsolve( (Mat, vec), A, B, C )
+
+    # defines the general solution (transient response `y(t)')
+    A, B, C = sol
+    y = A * y1 + B * y2 + C * y3 + yp
+
+    step = sympy.lambdify(
+        t, y.subs({r: R, alpha: Alpha, beta: Beta, b0: B0, h: H}), 'numpy'
+    )
+
+    impulse = sympy.lambdify(
+        t, D(y, t).subs({r: R, alpha: Alpha, beta: Beta, b0: B0, h: H}), 'numpy'
+    )
+
+    return (step, impulse)
+
+
 def perf(r, alpha, beta, step, impulse):
     """
     Synopsis:
     Obtains the performance characteristics of the dynamic system.
     """
 
-    omega = sqrt(alpha**2 + beta**2)    # natural frequency
-    zeta  = -alpha / omega              # damping ratio
+    omega = sqrt(alpha**2 + beta**2)                    # natural frequency
+    zeta  = -alpha / omega                              # damping ratio
     
-    ts = max(-4 / r,  -4 / alpha)               # settling time
-    P = 2 * pi / ( omega * sqrt(1 - zeta**2) )  # oscillation period
-    N = ts / P                                  # number of cycles
+    ts = max(-4 / r,  -4 / alpha)                       # settling time
+    P = Period = 2 * pi / ( omega * sqrt(1 - zeta**2) ) # period
+    N = Ncycles = ts / Period                           # number of cycles
 
     # Note: See comments at the end of the source regarding the peak time
-    tp = bisect(impulse, 0.15 * P, 0.85 * P)    # peak time
-    y_max = step(tp)                            # peak value
+    tp = bisect(impulse, 0.15 * P, 0.85 * P)            # peak time
+    y_max = step(tp)                                    # peak value
+    
+    A0 = ( -R * (Alpha**2 + Beta**2) )                  # A0 = a0
+    y_ss = B0 * H / A0                                  # steady-state
+
+
+    """ displays the performance characteristics of the dynamic system """
+    performance = (
+        f"\n\n"
+        f"Damping Ratio:                   {zeta}\n"
+        f"Natural Frequency:               {omega}\n"
+        f"peak time and value:             {tp}, {y_max}\n"
+        f"Settling time:                   {ts}\n"
+        f"steady-state value:              {y_ss}\n" 
+        f"Maximum Overshoot:               {y_max / y_ss - 1}\n"
+        f"Oscillation Period:              {Period}\n"
+        f"Number of Oscillation Cycles:    {Ncycles}\n\n"
+    )
+
+    print(performance)
 
     return (omega, zeta, ts, tp, P, N, y_max)
 
 
-
-# time
-t = sympy.Symbol('t')
-# characteristic roots for the underdamped dynamic system
-r = sympy.Symbol('r')                           # real
-alpha, beta = sympy.symbols( ('alpha', 'beta') )# complex conjugates
-
-
-# expresses the standard coefficients of the ODE in terms of the roots
-a0 = -r * (alpha**2 + beta**2)
-a1 = 2 * r * alpha  + (alpha**2 + beta**2)
-a2 = -(r + 2 * alpha)
-b0 = sympy.Symbol('b0')
-
-
-# defines the homogeneous solution, y
-y1 = sympy.exp(r * t)
-y2 = sympy.exp(alpha * t) * sympy.sin(beta * t)
-y3 = sympy.exp(alpha * t) * sympy.cos(beta * t)
-
-y = y1 + y2 + y3
-
-# defines the particular solution, yp
-h = sympy.Symbol('h')
-u = h                   # u(t), step
-yp = b0 * h / a0
-
-
-""" checks the general and particular solutions """
-
-"""
-test_homogeneous = (
-    sympy.diff(y, t, t, t) + a2 * sympy.diff(y, t, t) +
-    a1 * sympy.diff(y, t) + a0 * y
-)
-
-test_particular = (
-    sympy.diff(yp, t, t, t) + a2 * sympy.diff(yp, t, t) +
-    a1 * sympy.diff(yp, t) + a0 * yp - b0 * u
-)
-
-tests = (
-    f"homogeneous test: {test_homogeneous.simplify()}\n"
-    f"particular  test: {test_particular.simplify()}\n"
-)
-
-print(tests)
-"""
-
-
-""" solves the Initial Value Problem IVP """
-# matrix
-Mat = sympy.Matrix([
-    [y1.subs({t: 0}), y2.subs({t: 0}), y3.subs({t: 0})],
-    [D(y1,t).subs({t: 0}), D(y2,t).subs({t: 0}), D(y3,t).subs({t: 0})],
-    [D(y1,t,t).subs({t: 0}), D(y2,t,t).subs({t: 0}), D(y3,t,t).subs({t: 0})],
-])
-# coefficient vector
-vec = sympy.Matrix( [-yp.subs({t: 0}), 0, 0] )
-
-# obtains the undetermined coefficient of the general solution
-A, B, C = sympy.symbols( ('A', 'B', 'C') )
-""" Note: trailing comma enables sequence unpacking of the Finite Set """
-sol, = sympy.linsolve( (Mat, vec), A, B, C )
-
-# unpacks the undetermined coefficients
-A, B, C = sol
-# defines the general solution (transient response `y(t)')
-y = A * y1 + B * y2 + C * y3 + yp
-
-# displays that the initial values have been satisfied
-
-"""
-IVP = ( 
-    f"y''(0) = {D(y,t,t).subs({t: 0}).simplify()}\n"
-    f"y'(0)  = {D(y,t).subs({t: 0}).simplify()}\n"
-    f"y(0)   = {y.subs({t: 0}).simplify()}\n"
-)
-
-print(IVP)
-"""
 
 
 """ plots the transient response """
@@ -149,13 +149,7 @@ time = linspace(0, 25, 256)
 
 R, Alpha, Beta, B0, H = (-1, -0.25, 1, 1, 1)
 
-step = sympy.lambdify(
-    t, y.subs({r: R, alpha: Alpha, beta: Beta, b0: B0, h: H}), 'numpy'
-)
-
-impulse = sympy.lambdify(
-    t, D(y, t).subs({r: R, alpha: Alpha, beta: Beta, b0: B0, h: H}), 'numpy'
-)
+step, impulse = fstep(R, Alpha, Beta, B0, H)
 
 plt.close("all")
 plt.ion()
@@ -168,26 +162,8 @@ ax.set_title("Step Response of an Underdamped Third-Order Dynamic System")
 ax.grid()
 
 
-# obtains the performance characteristics
-prms = perf(R, Alpha, Beta, step, impulse)
-omega, zeta, ts, tp, Period, Ncycles, y_max = prms
-# steady-state value
-y_ss = yp.subs({b0: B0, h: H, r: R, alpha: Alpha, beta: Beta})
-
-
-""" displays the performance characteristics of the dynamic system """
-performance = (
-    f"\n\n"
-    f"Damping Ratio:                   {zeta}\n"
-    f"Natural Frequency:               {omega}\n"
-    f"peak time and value:             {tp}, {y_max}\n"
-    f"Settling time:                   {ts}\n"
-    f"steady-state value:              {y_ss}\n" 
-    f"Maximum Overshoot:               {y_max / y_ss - 1}\n"
-    f"Oscillation Period:              {Period}\n"
-    f"Number of Oscillation Cycles:    {Ncycles}\n\n"
-)
-print(performance)
+# displays performance characteristics on the console
+perf(R, Alpha, Beta, step, impulse)
 
 
 

@@ -34,8 +34,9 @@ References:
 import sympy
 from sympy import diff as D
 from numpy import pi, sqrt
-from numpy import linspace
+from numpy import empty, linspace
 from scipy.optimize import bisect
+from scipy.integrate import solve_ivp
 import matplotlib as mpl
 mpl.use("qt5agg")
 from matplotlib import pyplot as plt
@@ -151,14 +152,51 @@ R, Alpha, Beta, B0, H = (-1, -0.25, 1, 1, 1)
 
 step, impulse = fstep(R, Alpha, Beta, B0, H)
 
+
+def odefun(t, y):
+    """
+    Synopsis:
+    Defines the third-order system as an equivalent system of first-order
+    ODEs to obtain the transient response y(t) numerically.
+    """
+
+    # defines the ``standard'' coefficients of the third-order ODE
+    A0 = -R * (Alpha**2 + Beta**2)
+    A1 = 2 * R * Alpha  + (Alpha**2 + Beta**2)
+    A2 = -(R + 2 * Alpha)
+
+    f = empty(3)
+
+    f[0] = y[1]
+    f[1] = y[2]
+    f[2] = -A2 * y[2] - A1 * y[1] - A0 * y[0] + B0 * H
+
+    return f
+
+
+# solves the third-order ODE numerically for verification
+tspan = [0, 25]
+""" initial values: y(0) = 0, y'(0) = 0, y''(0) = 0 """
+yi = [0, 0, 0]
+# applies the fourth-order Runge-Kutta method
+odesol = solve_ivp(odefun, tspan, yi, method="RK45")
+t, y = odesol.t, odesol.y
+y_step = y[0, :]    # step response
+y_impulse = y[1, :] # impulse response
+
+
 plt.close("all")
 plt.ion()
 
 fig, ax = plt.subplots()
-ax.plot(time, step(time), linewidth = 2, color = "black")
+ax.plot(time, step(time), linewidth = 2, color = "black",
+        label = "analytic")
+ax.plot(t, y_step, linestyle = "", marker = "d", color = "orange",
+        label = "numeric")
 ax.set_xlabel("time, t")
 ax.set_ylabel("transient response, y(t)")
 ax.set_title("Step Response of an Underdamped Third-Order Dynamic System")
+ax.legend()
 ax.grid()
 
 

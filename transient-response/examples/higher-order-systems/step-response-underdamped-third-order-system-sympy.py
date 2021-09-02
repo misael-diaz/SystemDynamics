@@ -43,6 +43,20 @@ from matplotlib import pyplot as plt
 
 
 def fstep(R, Alpha, Beta, B0, H):
+    """
+    Synopsis:
+    Returns lambdas to obtain the step and impulse responses of the
+    third-order system given the values of the real, complex roots, and
+    input step parameters.
+
+    inputs:
+    R               real root
+    Alpha, Beta     real and imaginary components of the complex roots
+    B0, H           forcing constant and step magnitude
+
+    outputs:
+    step, impulse   lambdas
+    """
 
     # time
     t = sympy.Symbol('t')
@@ -105,7 +119,8 @@ def fstep(R, Alpha, Beta, B0, H):
 def perf(r, alpha, beta, step, impulse):
     """
     Synopsis:
-    Obtains the performance characteristics of the dynamic system.
+    Obtains the performance characteristics of the third-order underdamped
+    dynamic system.
     """
 
     omega = sqrt(alpha**2 + beta**2)                    # natural frequency
@@ -143,7 +158,7 @@ def perf(r, alpha, beta, step, impulse):
 
 
 
-""" plots the transient response """
+""" plots the analytic and numeric transient responses """
 time = linspace(0, 25, 256)
 
 R, Alpha, Beta, B0, H = (-1, -0.25, 1, 1, 1)
@@ -154,6 +169,7 @@ step, impulse = fstep(R, Alpha, Beta, B0, H)
 def odefun(t, y):
     """
     Synopsis:
+    The state-variable equations for the third-order underdamped system.
     Defines the third-order system as an equivalent system of first-order
     ODEs to obtain the transient response y(t) numerically.
     """

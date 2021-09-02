@@ -9,7 +9,7 @@ Synopsis:
 Solves the Initial Value Problem IVP that models the underdamped response,
 y(t), of an underdamped third-order dynamic system:
 
-y''' + a2 * y'' + a1 * y1 + a0 * y = b0 * u(t), y'' = y' = y = 0 at t = 0,
+y''' + a2 * y'' + a1 * y' + a0 * y = b0 * u(t), y'' = y' = y = 0 at t = 0,
 
 where a0, a1, a2, and b0 are the ``standard'' coefficients of the Ordinary
 Differential Equation ODE, and u(t) is the step response of magnitude h.

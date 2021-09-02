@@ -202,6 +202,21 @@ ax.grid()
 perf(R, Alpha, Beta, step, impulse)
 
 
+""" plots the impulse response """
+fig, ax = plt.subplots()
+ax.plot(time, impulse(time), linewidth = 2, color = "black",
+        label = "analytic")
+ax.plot(t, y_impulse, linestyle = "", marker = "d", color = "orange",
+        label = "numeric")
+ax.set_xlabel("time, t")
+ax.set_ylabel("transient response, y(t)")
+ax.set_title(
+    "Impulse Response of an Underdamped Third-Order Dynamic System"
+)
+ax.legend()
+ax.grid()
+
+
 
 """
 Comments on the Determination of the Peak Time:

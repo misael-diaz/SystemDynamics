@@ -71,8 +71,6 @@ def fstep(R, Alpha, Beta, B0, H):
     yp = b0 * h / a0
 
 
-
-
     """ solves the Initial Value Problem IVP """
     # matrix
     Mat = sympy.Matrix([

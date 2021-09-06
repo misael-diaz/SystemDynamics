@@ -46,15 +46,15 @@ beta  = Wn * sqrt(1 - DR^2);	% imaginary
 t = linspace(0, 2, 512);
 y = (  1 - exp(alpha * t) .* ( cos(beta*t) - alpha/beta * sin(beta*t) )  );
 y = (b0 * A / Wn^2) * y;
-plot(t, y, '-k')
+plot(t, y, '-k', 'linewidth', 2)
 hold on
 
 
 
 % specifies the figure labels, the title, and the legend
-xlabel('time, t, sec')
-ylabel('underdamped step response, y(t)')
-title('step response of an underdamped mechanical system')
+xlabel('time, t, seconds')
+ylabel('transient response, y(t), radians')
+title('Step Response of an Underdamped Mechanical System')
 grid on
 
 % exports figure to PNG format with 600 DPI

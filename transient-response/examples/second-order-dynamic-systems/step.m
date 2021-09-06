@@ -3,7 +3,7 @@
 % Author: Prof. M Diaz-Maldonado                          Date: Dec/27/2019
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %
 % Synopsis:
-% Reproduces the response of example 7.8 from Kluever's textbook.
+% Reproduces the step response of example 7.8 from Kluever's textbook.
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %
 clear;
 close all;
@@ -46,7 +46,7 @@ plot(t,y,'-k'); hold on;
 
 % specifies the figure labels, the title, and the legend
 xlabel('time, t, sec');
-ylabel('underdamped unit-step response, y(t)');
+ylabel('underdamped step response, y(t)');
 title('step response of an underdamped mechanical system');
 %title('step response of an underdamped second order system (\omega_n = 1 rad/s)');
 grid on;

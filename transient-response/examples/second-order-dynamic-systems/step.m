@@ -1,10 +1,20 @@
 % System Dynamics and Control                             December 27, 2019
 % ME 3030-21 WI19
-%
 % Prof. M Diaz-Maldonado
+%
 % Synopsis:
 % Reproduces the step response of example 7.8 from Kluever's textbook.
 %
+%
+% Copyright (c) 2021 Misael Diaz-Maldonado
+% This file is released under the GNU General Public License as published
+% by the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+%
+% References:
+% [0] CA Kluever, Dynamic Systems: Modeling, Simulation, and Control
+% [1] A Gilat, MATLAB: An Introduction with Applications, 6th edition
 
 clear
 close all

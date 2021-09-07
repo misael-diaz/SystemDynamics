@@ -21,7 +21,7 @@ beta  = Wn * sqrt(1 - DR^2);	% imaginary
 % calculates the transient response, y(t), Equation (7.72)
 t = linspace(0, 25, 512);
 y = 1 - exp(alpha * t) .* ( cos(beta * t) - alpha / beta * sin(beta * t) );
-plot(t, y, '-k')
+plot(t, y, '-k', 'linewidth', 2)
 hold on
 
 
@@ -30,14 +30,14 @@ DR = 0.4;
 alpha = -DR * Wn;
 beta  = Wn * sqrt(1 - DR^2);
 y = 1 - exp(alpha * t) .* ( cos(beta * t) - alpha / beta * sin(beta * t) );
-plot(t, y, '-r')
+plot(t, y, '-r', 'linewidth', 2)
 
 
 % specifies the figure labels, the title, and the legend
 xlabel('time, t, sec')
-ylabel('underdamped unit-step response, y(t)')
-title('step response of an underdamped second order system')
-legend('damping ratio \zeta = 0.2', 'damping ratio \zeta = 0.4')
+ylabel('transient response, y(t)')
+title('Unit-step Response of an Underdamped Second Order Dynamic System')
+legend('\zeta = 0.2', '\zeta = 0.4')
 grid on
 
 % exports figure to PNG format with 600 DPI

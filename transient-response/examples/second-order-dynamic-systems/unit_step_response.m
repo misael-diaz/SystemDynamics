@@ -11,27 +11,25 @@ close all
 clc
 
 % defines the second-order constants which specify a second-order system:
-% damping ratio
-DR = 0.2;
-% natural frequency
-Wn = 1;
+DR = 0.2;			% damping ratio
+Wn = 1.0;			% natural frequency
 
 % real and imaginary parts of the roots of the characteristic equation
-alpha = -DR * Wn;
-beta  = Wn * sqrt(1-DR^2);
+alpha = -DR * Wn;		% real
+beta  = Wn * sqrt(1 - DR^2);	% imaginary
 
 % calculates the transient response, y(t), Equation (7.72)
-t = linspace(0,25,500);
-y = 1 - exp(alpha * t) .* (cos(beta*t) - alpha/beta * sin(beta*t));
-plot(t,y,'-k')
+t = linspace(0, 25, 512);
+y = 1 - exp(alpha * t) .* ( cos(beta * t) - alpha / beta * sin(beta * t) );
+plot(t, y, '-k')
 hold on
 
 
 % plots the step response for a higher damping ratio on the same figure
 DR = 0.4;
 alpha = -DR * Wn;
-beta  = Wn * sqrt(1-DR^2);
-y = 1 - exp(alpha * t) .* (cos(beta*t) -alpha/beta * sin(beta*t));
+beta  = Wn * sqrt(1 - DR^2);
+y = 1 - exp(alpha * t) .* ( cos(beta * t) - alpha / beta * sin(beta * t) );
 plot(t, y, '-r')
 
 

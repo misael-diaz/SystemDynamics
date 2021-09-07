@@ -3,8 +3,15 @@
 % Prof. M Diaz-Maldonado
 %
 % Synopsis:
-% Obtains the unit-step response of an underdamped second-order system.
-% (Reproduces Figure 7.19 of Kluever's textbook.)
+% Obtains the unit-step response of an underdamped second-order system:
+%
+% 	y'' + a1 * y' + a0 * y = b0 * u(t),	y(0) = y'(0) = 0,
+%
+% where a1 = 2 * zeta * omega, a0 = b0 = omega^2, zeta is the damping
+% ratio, omega is the natural frequency, and u(t) is the unit step
+% function (u(t) = 1, for t > 0).
+%
+% (The code reproduces Figure 7.19 of Kluever's textbook.)
 %
 %
 % Copyright (c) 2021 Misael Diaz-Maldonado

@@ -12,14 +12,10 @@ close all
 clc
 
 % defines the second-order constants which specify a second-order system:
-% damping ratio
-DR = 0.2;
-% natural frequency
-Wn = 1;
-% pulse duration (sec)
-T = 0.5;
-% pulse intensity (note the pulse weight is A=1)
-P = 1 / T;
+DR = 0.2;		% damping ratio
+Wn = 1.0;		% natural frequency
+T = 0.5;		% pulse duration (sec)
+P = 1 / T;		% pulse intensity (note the pulse weight is A=1)
 
 % real and imaginary parts of the roots of the characteristic equation
 alpha = -DR * Wn;
@@ -32,14 +28,14 @@ y = @(t) 1 - exp(alpha * t) .* ( cos(beta*t) - alpha/beta * sin(beta*t) );
 Y = P * ( y(t) - y(t - T) .* (t > T) );
 
 yim = beta * (1 + (alpha / beta)^2) * exp(alpha * t) .* sin(beta * t);
-plot(t, Y, '-k');	hold on
-plot(t, yim, '--')
-legend('pulse response', 'impulse response')
+plot(t, Y, '-k', 'linewidth', 2);    hold on	% pulse
+plot(t, yim, '--', 'linewidth', 2)		% impulse
+legend('pulse', 'impulse')
 
 ylim([-0.5, 1.0])
 xlabel('time, t, sec')
 ylabel('transient response, y(t)')
-title('pulse response of an underdamped second order system')
+title('Pulse Response of an Underdamped Second Order Dynamic System')
 grid on
 
 print('pulse-response-second-order-system.png','-r600','-dpng')

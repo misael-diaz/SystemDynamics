@@ -6,6 +6,17 @@
 % Obtains the pulse response of an underdamped second-order system by
 % applying the superposition property. The weight of the pulse A = 1.
 % It's seen that as T -> 0 the response converges to the impulse response.
+%
+%
+% Copyright (c) 2021 Misael Diaz-Maldonado
+% This file is released under the GNU General Public License as published
+% by the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+%
+% References:
+% [0] CA Kluever, Dynamic Systems: Modeling, Simulation, and Control
+% [1] A Gilat, MATLAB: An Introduction with Applications, 6th edition
 
 clear
 close all

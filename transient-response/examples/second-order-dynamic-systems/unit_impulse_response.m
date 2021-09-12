@@ -20,21 +20,19 @@ beta  = Wn * sqrt(1 - DR^2);
 % Note: b0 = 1/Wn^2 and A=1.
 t = linspace(0, 30, 1024);
 y = beta * (1 + (alpha / beta)^2) * exp(alpha * t) .* sin(beta * t);
-plot(t, y, '-k'); hold on
+plot(t, y, '-k', 'linewidth', 2); hold on
 
 % plots the impulse response for a higher damping ratio on the same figure
 DR = 0.3;
 alpha = -DR * Wn;
 beta  = Wn * sqrt(1 - DR^2);
 y = beta * (1 + (alpha / beta)^2) * exp(alpha * t) .* sin(beta * t);
-plot(t, y, '-r')
+plot(t, y, '-r', 'linewidth', 2)
 
 % specifies the figure labels, the title, and the legend
 xlabel('time, t, sec')
-ylabel('underdamped impulse response, y(t)')
-title('impulse response of an underdamped second order system')
-grid on;
-
-legend('damping ratio \zeta = 0.15', 'damping ratio \zeta = 0.30')
-
+ylabel('transient response, y(t)')
+title('Impulse Response of an Underdamped Second Order Dynamic System')
+grid on
+legend('\zeta = 0.15', '\zeta = 0.30')	% damping ratios
 print('impulse-response-second-order-system.png','-r600','-dpng')

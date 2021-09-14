@@ -52,9 +52,10 @@ odefun = lambda t, y: ( b * sin(omega * t) - k * y )
 
 """ solves the transient response via the 4th-order Runge-Kutta Method """
 
-# finds the ``period'' of the transient response y(t)
-p = period = bisect(sinusoid, 1.5 * pi, 2.5 * pi)
-ti, tf = tspan = (0.0, p)
+# finds the duration of the first cycle of the transient response y(t)
+p = period = 2 * pi / omega
+tcycle = bisect(sinusoid, p, 1.5 * p)
+ti, tf = tspan = (0.0, tcycle)
 t = linspace(ti, tf, 256)
 odesol = solve_ivp(odefun, tspan, [yi], method="RK45")
 # unpacks the numerical solution
@@ -83,7 +84,7 @@ Note:
 The period of the transient response (the time the system spends executing
 a cycle) depends on the characteristics of the system (rate k) and that of
 the input signal (frequency omega). Thus, the arguments supplied to the
-bisection method to find the period shall need adjusting for other
+bisection method to find the period might need adjusting for other
 combinations of those parameters.
 
 If the period of the input signal is large (low frequencies) compared to

@@ -9,7 +9,7 @@ Synopsis:
 Solves for the transient response of a first-order system when subjected
 to a ramp input:
 
-                    y' + k * y = b * u(t),
+                    y' + k * y = b * u(t),  y(0) = 0,
 
 where k is the rate constant, b is the ``forcing'' constant, and u(t)
 is either the unit-ramp input function.

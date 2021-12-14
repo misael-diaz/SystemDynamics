@@ -24,6 +24,8 @@ by the Free Software Foundation, either version 3 of the License, or
 References:
 [0] CA Kluever, Dynamic Systems: Modeling, Simulation, and Control.
 [1] A Gilat, MATLAB: An Introduction with Applications, 6th edition.
+[2] R Johansson, Numerical Python: Scientific Computing and Data Science
+    Applications with NumPy, SciPy, and Matplotlib, 2nd edition.
 """
 
 from numpy import roots
